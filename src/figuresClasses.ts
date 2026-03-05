@@ -1,5 +1,15 @@
-type ShapeType = 'triangle' | 'circle' | 'rectangle';
-type ColorType = 'red' | 'green' | 'blue';
+export enum ShapeType {
+  Triangle = 'triangle',
+  Circle = 'circle',
+  Rectangle = 'rectangle',
+}
+
+export enum ColorType {
+  Red = 'red',
+  Green = 'green',
+  Blue = 'blue',
+}
+
 export interface Figure {
   shape: ShapeType;
   color: ColorType;
@@ -12,26 +22,26 @@ export class Triangle implements Figure {
     public a: number,
     public b: number,
     public c: number,
-    public shape: ShapeType = 'triangle',
+    public shape: ShapeType = ShapeType.Triangle,
   ) {
-    if (this.a <= 0 || this.b <= 0 || this.c <= 0) {
-      throw new Error('One parameter is less or is zero');
+    if (a <= 0 || b <= 0 || c <= 0) {
+      throw new Error('All sides of the triangle must be positive numbers');
     }
 
-    const max = Math.max(this.a, this.b, this.c);
-    const sumOfTwo = this.a + this.b + this.c - max;
-
-    if (max - sumOfTwo >= 0) {
-      throw new Error('The one from sides is bigger then sum of others!');
+    if (a + b <= c || a + c <= b || b + c <= a) {
+      throw new Error(
+        'The sum of any two sides must be greater than the third side',
+      );
     }
   }
 
   getArea(): number {
     const halfP = (this.a + this.b + this.c) / 2;
-
-    return Math.sqrt(
+    const area = Math.sqrt(
       halfP * (halfP - this.a) * (halfP - this.b) * (halfP - this.c),
     );
+
+    return Math.floor(area * 100) / 100;
   }
 }
 
@@ -39,10 +49,10 @@ export class Circle implements Figure {
   constructor(
     public color: ColorType,
     public r: number,
-    public shape: ShapeType = 'circle',
+    public shape: ShapeType = ShapeType.Circle,
   ) {
     if (r <= 0) {
-      throw new Error('your error message');
+      throw new Error('Radius must be a positive number');
     }
   }
 
@@ -58,20 +68,20 @@ export class Rectangle implements Figure {
     public color: ColorType,
     public a: number,
     public b: number,
-    public shape: ShapeType = 'rectangle',
+    public shape: ShapeType = ShapeType.Rectangle,
   ) {
     if (a <= 0 || b <= 0) {
-      throw new Error('your error message');
+      throw new Error('Sides must be positive numbers');
     }
   }
 
   getArea(): number {
-    return this.a * this.b;
+    const area = this.a * this.b;
+
+    return Math.floor(area * 100) / 100;
   }
 }
 
 export function getInfo(figure: Figure): string {
-  const area = Math.round(figure.getArea() * 100) / 100;
-
-  return `A ${figure.color} ${figure.shape} - ${area}`;
+  return `A ${figure.color} ${figure.shape} - ${figure.getArea()}`;
 }
